@@ -1,0 +1,90 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import { getAuth, signOut } from "firebase/auth";
+import { app } from "../lib/firebase";
+import { useRouter } from "next/navigation";
+
+export default function Navbar() {const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  
+const handleLogout = () => {
+  const auth = getAuth(app);
+  signOut(auth).then(() => {
+    console.log("Signed out");
+  });
+  router.push("/SignIn");
+
+};
+
+
+  return (
+    <nav className="bg-blue-600 text-white shadow-md">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <h1 className="text-xl font-bold">Problem Manager</h1>
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex gap-6 items-center">
+          <Link href="/user/problem_list" className="hover:text-gray-200">
+            Problem Set
+          </Link>
+          <Link href="/user/create" className="hover:text-gray-200">
+            Create Problems
+          </Link>
+          <Link href="/user/myproblem" className="hover:text-gray-200">
+            Created Problems
+          </Link>
+          <Link href="/user/solutions" className="hover:text-gray-200">
+            Created Solutions
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* Hamburger Button */}
+        <button
+          className="md:hidden"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle Menu"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d={open ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {open && (
+        <div className="md:hidden px-4 pb-4 flex flex-col gap-3">
+          <Link href="/problem-set" className="hover:text-gray-300">
+            Problem Set
+          </Link>
+          <Link href="/user/create" className="hover:text-gray-300">
+            Create Problems
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 text-left"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </nav>
+  );
+}
