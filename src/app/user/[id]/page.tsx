@@ -9,6 +9,10 @@ import React, { useState, use, useEffect } from 'react';
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { db,app } from "@/app/lib/firebase";
 import { doc,getDoc } from "firebase/firestore";
+import Link from "next/link";
+
+ // your Firestore export
+
 
 interface Problem {
     id: string;
@@ -25,7 +29,33 @@ export default function QuestionPage({ params }: { params: Promise<{ id: string 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
   const { id } = use(params); // unwrap async params
 
+const[Solutions,setSolutions]=useState([]);
+
+async function getSolutionsForProblem(problemId:any) {
+  const solutionsRef = collection(db,"problems",problemId,"solutions");
+  const q = query(solutionsRef, where("problemId", "==", problemId));
+
+  const querySnapshot = await getDocs(q);
+  const solutions:any = [];
+  querySnapshot.forEach((doc) => {
+    solutions.push({ id: doc.id, ...doc.data() });
+  });
   
+
+  return solutions;
+}
+
+
+useEffect(() => {
+  async function fetchSolutions() {console.log("Fetching solution")
+    const sols = await getSolutionsForProblem(id);
+    console.log("hi",sols)
+    setSolutions(sols);
+  }
+  fetchSolutions();
+  
+}, []);
+console.log("These are the solutions:", Solutions);
 
   const [code, setCode] = useState<string>('');
   const [Language, setLanguage] = useState<string>("Python");
@@ -92,7 +122,7 @@ if (docSnap.exists()) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            language: "cpp",
+            language: Language,
             version: "10.2.0",
             source: code,
             testcase: element,
@@ -130,7 +160,7 @@ if (docSnap.exists()) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          language: "cpp",
+          language: Language,
           version: "10.2.0",
           source: code,
           testcase:element.input
@@ -187,11 +217,19 @@ if (docSnap.exists()) {
         <option value="" disabled>
           Select one
         </option>
-        <option value="Python">Python</option>
-        <option value="C++">C++</option>
-        <option value="Java">Java</option>
+        <option value="python">Python</option>
+        <option value="cpp">C++</option>
+        <option value="java">Java</option>
       </select>
+      <Link
+  href={`/solutions/${id}`}
+  className="inline-block mx-[6rem] mt-4 px-6 py-2 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-lg shadow-md hover:scale-105 hover:from-green-600 hover:to-green-800 transition-transform duration-300"
+>
+  View Solution
+</Link>
+   
             </div>
+  
             <label htmlFor="code" className="block mb-2 font-semibold">
               Enter your code:
             </label>
@@ -215,6 +253,7 @@ if (docSnap.exists()) {
              onClick={handleRun}>Run</button>
 
           </form>
+          
           {Run&& CodeError[0]?<ErrorMessage message={CodeError[0]}/>:<TestCaseTabs codeOutput={CodeOutput} codeError={CodeError} id={id} />}
           {Loading &&<LoadingSpinner/>}
          

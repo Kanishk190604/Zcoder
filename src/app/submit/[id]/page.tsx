@@ -2,9 +2,11 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { db, auth } from '@/app/lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc,addDoc,serverTimestamp  } from 'firebase/firestore';
 import { use } from 'react';
+import { collection } from 'firebase/firestore';
 export default function SubmitSolution({ params }: { params: Promise<{ id: string }>}) { const [description, setDescription] = useState('');
+
 const [Title, setTitle] = useState('');
 const [code, setCode] = useState<any>();
 const [ProblemId, setProblemId] = useState<any>();
@@ -32,12 +34,14 @@ useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const submissionRef = doc(db, "users", user.uid, "submissions", problemId);
-    await setDoc(submissionRef, {Title,
+    const submissionsRef = collection(db, "problems",problemId, "solutions");
+
+    await addDoc(submissionsRef, {userid:user.uid,
+      Title,
       problemId,
       code,
       description,
-      timestamp: Date.now()
+      createdAt: new Date(),
     });
 
     alert("✅ Solution submitted!");
@@ -51,7 +55,7 @@ useEffect(() => {
       <textarea
         className="w-full border p-2 mb-4 rounded"
         rows={3}
-        value={description}
+        value={Title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
       />
@@ -70,7 +74,7 @@ useEffect(() => {
         className="w-full border p-2 rounded font-mono"
         rows={10}
         value={code}
-        onChange={(e) => setCode(e.target.value)}
+        
       />
 
       <button

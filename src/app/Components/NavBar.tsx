@@ -1,22 +1,34 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { getAuth, signOut } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { app } from "../lib/firebase";
 import { useRouter } from "next/navigation";
-
+import { User } from "firebase/auth";
 export default function Navbar() {const router = useRouter();
   const [open, setOpen] = useState(false);
-
-  
-const handleLogout = () => {
+  const [user, setUser] = useState<User | null>(null);
   const auth = getAuth(app);
+const handleLogout = () => {
+  
   signOut(auth).then(() => {
     console.log("Signed out");
   });
-  router.push("/SignIn");
+  router.push("/Authentication/SignIn");
 
 };
+useEffect(() => {
+  // Check login status on mount
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+      setUser(currentUser); // User is signed in
+    } else {
+      setUser(null); // No user signed in
+    }
+  });
+
+  return () => unsubscribe(); // Cleanup listener
+}, []);
 
 
   return (
@@ -38,14 +50,13 @@ const handleLogout = () => {
           <Link href="/user/solutions" className="hover:text-gray-200">
             Created Solutions
           </Link>
-          <button
+          {user &&<button
             onClick={handleLogout}
             className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
           >
             Logout
-          </button>
+          </button>}
         </div>
-
         {/* Hamburger Button */}
         <button
           className="md:hidden"

@@ -40,7 +40,7 @@ export default function AllProblems() {
         await loadProblems();
         setLoading(true);
         loadStatus(user.uid);
-      } else {router.push("/Authentication/SignUp");
+      } else {router.push("/Authentication");
        
       }
     });

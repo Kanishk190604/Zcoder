@@ -20,6 +20,11 @@ export default function SignIn() {const GoogleSignIn=()=>{
     const token = credential!.accessToken;
     // The signed-in user info.
     const user = result.user;
+   
+
+
+// Set token in cookie
+document.cookie = `token=${token}; path=/`
     // IdP data available using getAdditionalUserInfo(result)
     // ...
   }).catch((error) => {

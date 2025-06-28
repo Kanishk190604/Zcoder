@@ -9,8 +9,12 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       {/* Header */}
-      <header className="flex items-center justify-between bg-white p-4 rounded shadow">
+      <header className="flex-col  items-center justify-items-center bg-white p-4 rounded shadow">
         <h1 className="text-2xl font-bold text-indigo-600">Zcoder</h1>
+        <div className="bg-white p-6 rounded  text-center text-gray-600">
+          <h2 className="text-xl font-semibold mb-2">Welcome to Zcoder 🚀</h2>
+          <p>Start building your coding journey. Sign in or sign up to continue.</p>
+        </div>
         <div className="flex gap-4">
           <button
             onClick={() => router.push('/signin')}
@@ -25,15 +29,7 @@ export default function Dashboard() {
             Sign Up
           </button>
         </div>
-      </header>
+      </header></div>
 
-      {/* Main content */}
-      <main className="mt-10">
-        <div className="bg-white p-6 rounded shadow text-center text-gray-600">
-          <h2 className="text-xl font-semibold mb-2">Welcome to Zcoder 🚀</h2>
-          <p>Start building your coding journey. Sign in or sign up to continue.</p>
-        </div>
-      </main>
-    </div>
   );
 }
