@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs,getDoc ,doc} from "firebase/firestore";
+import { collection, getDocs} from "firebase/firestore";
 import { db } from "../../lib/firebase"; // update path to your initialized Firestore instance
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
@@ -22,10 +22,10 @@ type Problem = {
   submitTestCases: TestCase[];
   uid:string;
 };
-type ProblemStatus = {
-  question_id:string;
-  status:boolean
-};
+// type ProblemStatus = {
+//   question_id:string;
+//   status:boolean
+// };
 
 export default function AllProblems() {
   const [problems, setProblems] = useState<Problem[]>([]);
@@ -46,10 +46,10 @@ export default function AllProblems() {
     });
 
     return () => unsubscribe();
-  }, []);
-  useEffect(() => {
-    console.log("Updated problemStatus:", problemStatus);
-  }, [problemStatus]);
+  }, [router]);
+  // useEffect(() => {
+  //   console.log("Updated problemStatus:", problemStatus);
+  // }, [problemStatus]);
   
   const loadStatus = async (userId: string)=>{  try {const listRef = collection(db, "users", userId, "problemlist");
   const snapshot = await getDocs(listRef);

@@ -2,10 +2,9 @@
 import React,{use, useEffect, useState} from 'react'
 import { doc, getDoc } from "firebase/firestore";
 
-import { collectionGroup, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 
-function solution({ params }: { params: Promise<{ solId: string; problemId:string }> }) {const {solId,problemId} = use(params);
+function Solution({ params }: { params: Promise<{ solId: string; problemId:string }> }) {const {solId,problemId} = use(params);
 
 const [sol, setSol] = useState<any>(null);
 
@@ -65,4 +64,4 @@ return (
   );
 }
 
-export default solution;
+export default Solution;

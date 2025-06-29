@@ -1,24 +1,23 @@
 // components/TestCaseTabs.tsx
 'use client'
 import { useState,useEffect } from "react";
-import data from "../questions";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-import { db,app } from "@/app/lib/firebase";
+
+import { db } from "@/app/lib/firebase";
 import { doc,getDoc } from "firebase/firestore";
 
 
 
 
-interface Problem {
-    id: string;
-    title: string;
-    description: string;
-    uid: string;  
-    run_test_cases:any;
-    submit_test_cases:any;
+// interface Problem {
+//     id: string;
+//     title: string;
+//     description: string;
+//     uid: string;  
+//     run_test_cases:any;
+//     submit_test_cases:any;
 
 
-  }
+//   }
 const TestCaseTabs = (props:any) => {      
   const [activeTab, setActiveTab] = useState(0);
   const { id,codeOutput,codeError } = props; // unwrap async params
@@ -70,7 +69,7 @@ if (docSnap.exists()) {
           ) : problems?.run_test_cases ? (
             <div className="p-4 border rounded-md">
               <div className="flex space-x-4 mb-4">
-                {problems.run_test_cases.map((_, index) => (
+                {problems.run_test_cases.map((_:any, index:any) => (
                   <button
                     key={index}
                     className={`px-4 py-2 rounded-md ${

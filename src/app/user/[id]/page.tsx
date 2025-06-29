@@ -4,26 +4,25 @@ import TestCaseTabs from "@/app/Components/Cases_bar";
 import ErrorMessage from "@/app/Components/Error";
 import LoadingSpinner from "@/app/Components/Loader";
 import SubmissionResult from "@/app/Components/Submit_result";
-import data from "@/app/questions";
 import React, { useState, use, useEffect } from 'react';
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-import { db,app } from "@/app/lib/firebase";
+import {collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/app/lib/firebase";
 import { doc,getDoc } from "firebase/firestore";
 import Link from "next/link";
 
  // your Firestore export
 
 
-interface Problem {
-    id: string;
-    run_test_cases:any;
-    description: string;
-    uid: string;  
-    createdAt:any;
-    submit_test_cases:any;
-    title: string;
+// interface Problem {
+//     id: string;
+//     run_test_cases:any;
+//     description: string;
+//     uid: string;  
+//     createdAt:any;
+//     submit_test_cases:any;
+//     title: string;
 
-  }
+//   }
 
 export default function QuestionPage({ params }: { params: Promise<{ id: string }> }) {
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -54,7 +53,7 @@ useEffect(() => {
   }
   fetchSolutions();
   
-}, []);
+}, [id]);
 console.log("These are the solutions:", Solutions);
 
   const [code, setCode] = useState<string>('');
@@ -62,21 +61,21 @@ console.log("These are the solutions:", Solutions);
   const [CodeOutput, setCodeOutput] = useState<string[]>([]);
   const [CodeError, setCodeError] = useState<string[]>([]);
   const [SubmitOutput, setSubmitOutput] = useState<string[]>([]);
-  const [SubmitError, setSubmitError] = useState<string[]>([]);
+  //const [SubmitError, setSubmitError] = useState<string[]>([]);
   const[Run,SetRun]=useState<boolean>(false);
   const[Loading,SetLoading]=useState<boolean>(false);
   const [ShowResult, setShowResult] = useState(false);
-  const [firstFailed, setFirstFailed] = useState<null | {
-    input: string;
-    expected: string;
-    actual: string;
-  }>(null);
+  // const [firstFailed, setFirstFailed] = useState<null | {
+  //   input: string;
+  //   expected: string;
+  //   actual: string;
+  // }>(null);
 
 
   const [problems, setProblems] = useState<any>();
-  const [loading, setLoading] = useState(true);
+ // const [loading, setLoading] = useState(true);
   useEffect(() => {   async function fetchUserProblems() {
-    setLoading(true);
+    //setLoading(true);
     const docRef = doc(db, "problems", id); // problemId is the document ID
 const docSnap = await getDoc(docRef);
 
@@ -87,7 +86,7 @@ if (docSnap.exists()) {
   };
   console.log("Found problem:", question);
   setProblems(question);
-  setLoading(false);
+  //setLoading(false);
 } else {
   console.log("❌ Problem not found");
 }
@@ -99,7 +98,7 @@ if (docSnap.exists()) {
   fetchUserProblems(); 
     
   
-  }, [])
+  }, [id])
   
   ;
 
@@ -109,7 +108,7 @@ if (docSnap.exists()) {
     setCodeOutput([]);
     setCodeError([]);
     SetRun(true);
-    setFirstFailed(null); // reset
+   // setFirstFailed(null); // reset
   
     const outputs: string[] = [];
     const errors: string[] = [];
@@ -131,7 +130,7 @@ if (docSnap.exists()) {
   
         const data = await res.json();
         const actual = (data.run?.stdout ?? "").trim();
-        const expected = problems.submit_test_cases[i].output.trim();
+       // const expected = problems.submit_test_cases[i].output.trim();
   
         outputs.push(actual);
         errors.push(data.run?.stderr ?? "");

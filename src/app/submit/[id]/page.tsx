@@ -2,22 +2,22 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { db, auth } from '@/app/lib/firebase';
-import { doc, setDoc,addDoc,serverTimestamp  } from 'firebase/firestore';
+import { addDoc} from 'firebase/firestore';
 import { use } from 'react';
 import { collection } from 'firebase/firestore';
 export default function SubmitSolution({ params }: { params: Promise<{ id: string }>}) { const [description, setDescription] = useState('');
 
 const [Title, setTitle] = useState('');
 const [code, setCode] = useState<any>();
-const [ProblemId, setProblemId] = useState<any>();
+// const [ProblemId, setProblemId] = useState<any>();
   const router = useRouter();
   const searchParams = useSearchParams();
   const problemId = use(params).id;
 //   const codeFromQuery = searchParams.get('code') || 'k';
 useEffect(() => {
     (async () => {
-      const resolvedParams = await params;
-      setProblemId(resolvedParams.id);
+      //const resolvedParams = await params;
+     // setProblemId(resolvedParams.id);
       console.log('Current searchParams:', searchParams.toString());
       const rawCode = searchParams.get('code');
       if (rawCode) {

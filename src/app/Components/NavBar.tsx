@@ -28,7 +28,7 @@ useEffect(() => {
   });
 
   return () => unsubscribe(); // Cleanup listener
-}, []);
+}, [auth]);
 
 
   return (

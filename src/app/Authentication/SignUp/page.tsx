@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
 
-import { initializeApp } from "firebase/app";
+//import { initializeApp } from "firebase/app";
 import { db } from "@/app/lib/firebase"; // Ensure your firebase config is correct
-import { collection, addDoc, serverTimestamp,getDocs,setDoc,doc,getDoc } from "firebase/firestore";
+import { collection,getDocs,setDoc,doc,getDoc } from "firebase/firestore";
 
 
 import { app } from "../../lib/firebase";
@@ -17,14 +17,12 @@ export default function Signup() {
        
 createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    // ...
+   console.log(userCredential)
   })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
+  .catch((error) => {console.log(error);
+    // const errorCode = error.code;
+    // const errorMessage = error.message;
+    // // ..
   });
     }
 
@@ -33,7 +31,7 @@ createUserWithEmailAndPassword(auth, email, password)
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  //const [message, setMessage] = useState('');
 
   const handleSignup = async (e: React.FormEvent) => {e.preventDefault();
     console.log("button Clicked");
@@ -57,7 +55,7 @@ createUserWithEmailAndPassword(auth, email, password)
 
 
       // ✅ Step 3: Add each problem to this user's problemlist
-      const batchWrites = problemSnapshot.docs.map((problemDoc) => {
+       problemSnapshot.docs.map((problemDoc) => {
         const problemId = problemDoc.id;
         const problemStatusRef = doc(db, "users", user.uid, "problemlist", problemId);
   
@@ -102,9 +100,9 @@ createUserWithEmailAndPassword(auth, email, password)
           Sign Up
         </button>
 
-        {message && (
+        {/* {message && (
           <div className="mt-4 text-sm text-center text-gray-700">{message}</div>
-        )}
+        )} */}
       </form>
     </div>
   );

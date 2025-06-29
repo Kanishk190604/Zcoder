@@ -44,7 +44,7 @@ export default function CreateProblemForm() {
      
       alert("Problem successfully created!");
       const problemSnapshot = await getDocs(collection(db, "problems",));
-      const batchWrites = problemSnapshot.docs.map((problemDoc) => {
+       problemSnapshot.docs.map((problemDoc) => {
         const problemId = problemDoc.id;
         const problemStatusRef = doc(db, "users", user.uid, "problemlist", problemId);
   

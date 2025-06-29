@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs,getDoc ,doc} from "firebase/firestore";
+import { collection, getDocs} from "firebase/firestore";
 import { db } from "../../lib/firebase"; // update path to your initialized Firestore instance
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
@@ -22,14 +22,11 @@ type Problem = {
   submitTestCases: TestCase[];
   uid:string;
 };
-type ProblemStatus = {
-  question_id:string;
-  status:boolean
-};
 
-export default function myproblem() {
+
+export default function Myproblem() {
   const [problems, setProblems] = useState<Problem[]>([]);
-  const[problemStatus,setStatus]=useState<any>([])
+  //const[problemStatus,setStatus]=useState<any>([])
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -46,9 +43,9 @@ export default function myproblem() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
-  (console.log("this is problem status", problemStatus))
+ // (console.log("this is problem status", problemStatus))
 
   const loadProblems = async (user:any) => { 
     try {const q = query(
@@ -84,11 +81,11 @@ export default function myproblem() {
           </thead>
           <tbody>
             {
-            problems.map((p, index) =>{ console.log(problemStatus);
+            problems.map((p, index) =>{ //console.log(problemStatus);
               console.log(p);
-            const q=problemStatus.find((element:any)=>{return element.question_id===p.uid})
+            //const q=problemStatus.find((element:any)=>{return element.question_id===p.uid})
 
-            console.log("reqired",q)
+            
               return(
               <tr key={p.id} className="border-t hover:bg-gray-50">
                 <td className="p-3">{index + 1}</td>

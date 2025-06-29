@@ -19,7 +19,7 @@ export default function SignIn() {const GoogleSignIn=()=>{
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential!.accessToken;
     // The signed-in user info.
-    const user = result.user;
+    //const user = result.user;
    
 
 
@@ -27,15 +27,15 @@ export default function SignIn() {const GoogleSignIn=()=>{
 document.cookie = `token=${token}; path=/`
     // IdP data available using getAdditionalUserInfo(result)
     // ...
-  }).catch((error) => {
+  }).catch((error) => {console.log(error);
     // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    const email = error.customData.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
+    // const errorCode = error.code;
+    // const errorMessage = error.message;
+    // // The email of the user's account used.
+    // const email = error.customData.email;
+    // // The AuthCredential type that was used.
+    // const credential = GoogleAuthProvider.credentialFromError(error);
+    // // ...
   });
 }
     const signinUser=(email:string,password:string)=>{
@@ -51,6 +51,8 @@ document.cookie = `token=${token}; path=/`
     const errorCode = error.code;
     const errorMessage = error.message;
     console.error(error);
+    console.error(errorCode);
+    console.error(errorMessage);
     // ..
   });
     }
@@ -60,7 +62,7 @@ document.cookie = `token=${token}; path=/`
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  //const [message, setMessage] = useState('');
 
   const handleSignin = async (e: React.FormEvent) => {e.preventDefault();
     signinUser(email,password);  
@@ -105,9 +107,9 @@ document.cookie = `token=${token}; path=/`
           Sign In With Google
         </button>
 
-        {message && (
+        {/* {message && (
           <div className="mt-4 text-sm text-center text-gray-700">{message}</div>
-        )}
+        )} */}
       </form>
     </div>
   );

@@ -2,7 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import {useEffect} from "react"
-import { db,app } from "../lib/firebase";
+import { db } from "../lib/firebase";
 import { auth } from "../lib/firebase";
 import { updateDoc,doc } from "firebase/firestore";
 interface Props {
@@ -21,19 +21,20 @@ const SubmissionResult: React.FC<Props> = ({ codeOutput, expectedOutput, inputs,
   );
 
   // ✅ All test cases passed
-  if (firstMismatchIndex === -1) {useEffect(() => {async function ChangeStatus(){ const user = auth.currentUser;
+  useEffect(() => {async function ChangeStatus(){ const user = auth.currentUser;
     await updateDoc(doc(db, "users", user!.uid, "problemlist", ID), {
     status: true, // or "completed"
   });
 }
+if (firstMismatchIndex === -1) {
 
-ChangeStatus();
+ChangeStatus();}
    
   
    
-  }, [])
+  }, [ID])
   
-  
+  if (firstMismatchIndex === -1) {
     return (
       <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded-md">
         <p>✅ All test cases passed!</p>
