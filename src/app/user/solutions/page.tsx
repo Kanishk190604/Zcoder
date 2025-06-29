@@ -4,7 +4,8 @@ import { collectionGroup, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from '@/app/lib/firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import Link from 'next/link';
-
+import useAuth from '@/app/lib/useAuth';
+import { useRouter } from 'next/navigation';
 interface Solution {
   id: string;
   code: string;
@@ -16,8 +17,38 @@ interface Solution {
 }
 
 function Solutions() {
-  const [solutions, setSolutions] = useState<Solution[]>([]);
-  const [loading, setLoading] = useState(true);
+    const { user, loading } = useAuth();
+    const router = useRouter();
+    const [solutions, setSolutions] = useState<Solution[]>([]);
+    const [Loading, setLoading] = useState(true);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            console.log("✅ User is logged in:", user.uid);
+            const sols = await getAllSolutionsByUser(user.uid);
+            console.log("Fetched solutions:", sols);
+            setSolutions(sols);
+            console.log("my boy",sols);
+          } else {
+            console.log("❌ No user logged in");
+            setSolutions([]);
+          }
+          setLoading(false);
+        });
+    
+        return () => unsubscribe();
+      }, []);
+  
+    if (loading) {
+      return <div>Loading...</div>; // Show loader until Firebase checks auth
+    }
+  
+    if (!user) {
+      router.push("/Authentication");
+      return null;
+    }
+  
+ 
 
   async function getAllSolutionsByUser(userId: string) {
     try {
@@ -38,25 +69,9 @@ function Solutions() {
     }
   }
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        console.log("✅ User is logged in:", user.uid);
-        const sols = await getAllSolutionsByUser(user.uid);
-        console.log("Fetched solutions:", sols);
-        setSolutions(sols);
-        console.log("my boy",sols);
-      } else {
-        console.log("❌ No user logged in");
-        setSolutions([]);
-      }
-      setLoading(false);
-    });
+  
 
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
+  if (Loading) {
     return <div>Loading solutions...</div>;
   }
 

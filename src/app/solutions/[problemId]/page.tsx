@@ -4,6 +4,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 import { use } from 'react';
 import Link from 'next/link';
+import useAuth from '@/app/lib/useAuth';
+import { useRouter } from 'next/navigation';
 interface Solution {
   id: string;
   code: string;
@@ -13,10 +15,32 @@ interface Solution {
   createdAt?: any;
 }
 
-function Solutions({ params }: { params: Promise<{ problemId: string }> }) {
-  const {problemId} = use(params); 
+function Solutions({ params }: { params: Promise<{ problemId: string }> }) {  const { user, loading } = useAuth();
+const router = useRouter();
+const {problemId} = use(params); 
   const [solutions, setSolutions] = useState<Solution[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [Loading, setLoading] = useState(true);
+  useEffect(() => {
+    async function fetchSolutions() {
+      console.log("Fetching solutions");
+      const sols = await getSolutionsForProblem(problemId);
+      console.log("Fetched solutions:", sols);
+      setSolutions(sols);
+      setLoading(false);
+    }
+    fetchSolutions();
+  }, [problemId]);
+
+
+if (loading) {
+  return <div>Loading...</div>; // Show loader until Firebase checks auth
+}
+
+if (!user) {
+  router.push("/Authentication");
+  return null;
+}
+  
 
   async function getSolutionsForProblem(problemId: string) {if (!problemId) {
     console.error("Problem ID is undefined!");
@@ -33,18 +57,8 @@ function Solutions({ params }: { params: Promise<{ problemId: string }> }) {
     return sols;
   }
 
-  useEffect(() => {
-    async function fetchSolutions() {
-      console.log("Fetching solutions");
-      const sols = await getSolutionsForProblem(problemId);
-      console.log("Fetched solutions:", sols);
-      setSolutions(sols);
-      setLoading(false);
-    }
-    fetchSolutions();
-  }, [problemId]);
-
-  if (loading) {
+ 
+  if (Loading) {
     return <div>Loading solutions...</div>;
   }
 

@@ -1,22 +1,36 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import useAuth from "@/app/lib/useAuth";
+
 import { db,auth } from "@/app/lib/firebase"; // Ensure your firebase config is correct
 import { collection, addDoc, serverTimestamp,getDocs,setDoc,doc } from "firebase/firestore";
 
-export default function CreateProblemForm() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [runCases, setRunCases] = useState([
-    { input: "", output: "" },
-    { input: "", output: "" },
-    { input: "", output: "" }
-  ]);
-  const [submitCases, setSubmitCases] = useState([
-    { input: "", output: "" },
-    { input: "", output: "" },
-    { input: "", output: "" }
-  ]);
+export default function CreateProblemForm() {const [title, setTitle] = useState("");
+const [description, setDescription] = useState("");
+const [runCases, setRunCases] = useState([
+  { input: "", output: "" },
+  { input: "", output: "" },
+  { input: "", output: "" }
+]);
+const [submitCases, setSubmitCases] = useState([
+  { input: "", output: "" },
+  { input: "", output: "" },
+  { input: "", output: "" }
+]);
 
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loader until Firebase checks auth
+  }
+
+  if (!user) {
+    router.push("/Authentication");
+    return null;
+  }
+  
   const addSubmitCase = () => {
     if (submitCases.length < 10) {
       setSubmitCases([...submitCases, { input: "", output: "" }]);

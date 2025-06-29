@@ -4,7 +4,7 @@ export default function Authentication() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to CodeVerse</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Zcoder</h1>
         <p className="text-gray-600 mb-6">Sharpen your skills with challenges, contests, and more.</p>
 
         <div className="flex flex-col space-y-4">

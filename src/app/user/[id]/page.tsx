@@ -9,7 +9,8 @@ import {collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 import { doc,getDoc } from "firebase/firestore";
 import Link from "next/link";
-
+import useAuth from "@/app/lib/useAuth";
+import { useRouter } from "next/navigation";
  // your Firestore export
 
 
@@ -24,11 +25,69 @@ import Link from "next/link";
 
 //   }
 
-export default function QuestionPage({ params }: { params: Promise<{ id: string }> }) {
-    const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-  const { id } = use(params); // unwrap async params
-
+export default function QuestionPage({ params }: { params: Promise<{ id: string }> }) {  const { user, loading } = useAuth();
+const router = useRouter();
 const[Solutions,setSolutions]=useState([]);
+
+const [problems, setProblems] = useState<any>();
+// const [loading, setLoading] = useState(true);
+const { id } = use(params); 
+const [code, setCode] = useState<string>('');
+  const [Language, setLanguage] = useState<string>("Python");
+  const [CodeOutput, setCodeOutput] = useState<string[]>([]);
+  const [CodeError, setCodeError] = useState<string[]>([]);
+  const [SubmitOutput, setSubmitOutput] = useState<string[]>([]);
+  //const [SubmitError, setSubmitError] = useState<string[]>([]);
+  const[Run,SetRun]=useState<boolean>(false);
+  const[Loading,SetLoading]=useState<boolean>(false);
+  const [ShowResult, setShowResult] = useState(false);
+useEffect(() => {
+  async function fetchSolutions() {console.log("Fetching solution")
+    const sols = await getSolutionsForProblem(id);
+    console.log("hi",sols)
+    setSolutions(sols);
+  }
+  fetchSolutions();
+  
+}, [id]);
+useEffect(() => {   async function fetchUserProblems() {
+  //setLoading(true);
+  const docRef = doc(db, "problems", id); // problemId is the document ID
+const docSnap = await getDoc(docRef);
+
+if (docSnap.exists()) {
+const question = {
+  id: docSnap.id,
+  ...docSnap.data()
+};
+console.log("Found problem:", question);
+setProblems(question);
+//setLoading(false);
+} else {
+console.log("❌ Problem not found");
+}
+
+
+  
+}
+
+fetchUserProblems(); 
+  
+
+}, [id])
+
+
+if (loading) {
+  return <div>Loading...</div>; // Show loader until Firebase checks auth
+}
+
+if (!user) {
+  router.push("/Authentication");
+  return null;
+}
+    const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  // unwrap async params
+
 
 async function getSolutionsForProblem(problemId:any) {
   const solutionsRef = collection(db,"problems",problemId,"solutions");
@@ -45,26 +104,10 @@ async function getSolutionsForProblem(problemId:any) {
 }
 
 
-useEffect(() => {
-  async function fetchSolutions() {console.log("Fetching solution")
-    const sols = await getSolutionsForProblem(id);
-    console.log("hi",sols)
-    setSolutions(sols);
-  }
-  fetchSolutions();
-  
-}, [id]);
+
 console.log("These are the solutions:", Solutions);
 
-  const [code, setCode] = useState<string>('');
-  const [Language, setLanguage] = useState<string>("Python");
-  const [CodeOutput, setCodeOutput] = useState<string[]>([]);
-  const [CodeError, setCodeError] = useState<string[]>([]);
-  const [SubmitOutput, setSubmitOutput] = useState<string[]>([]);
-  //const [SubmitError, setSubmitError] = useState<string[]>([]);
-  const[Run,SetRun]=useState<boolean>(false);
-  const[Loading,SetLoading]=useState<boolean>(false);
-  const [ShowResult, setShowResult] = useState(false);
+  
   // const [firstFailed, setFirstFailed] = useState<null | {
   //   input: string;
   //   expected: string;
@@ -72,33 +115,7 @@ console.log("These are the solutions:", Solutions);
   // }>(null);
 
 
-  const [problems, setProblems] = useState<any>();
- // const [loading, setLoading] = useState(true);
-  useEffect(() => {   async function fetchUserProblems() {
-    //setLoading(true);
-    const docRef = doc(db, "problems", id); // problemId is the document ID
-const docSnap = await getDoc(docRef);
-
-if (docSnap.exists()) {
-  const question = {
-    id: docSnap.id,
-    ...docSnap.data()
-  };
-  console.log("Found problem:", question);
-  setProblems(question);
-  //setLoading(false);
-} else {
-  console.log("❌ Problem not found");
-}
-
-  
-    
-  }
-
-  fetchUserProblems(); 
-    
-  
-  }, [id])
+ 
   
   ;
 

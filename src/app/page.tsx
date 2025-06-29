@@ -17,13 +17,13 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-4">
           <button
-            onClick={() => router.push('/signin')}
+            onClick={() => router.push('/Authentication/SignIn')}
             className="px-4 py-2 rounded bg-indigo-500 text-white hover:bg-indigo-600"
           >
             Sign In
           </button>
           <button
-            onClick={() => router.push('/signup')}
+            onClick={() => router.push('/Authentication/SignUp')}
             className="px-4 py-2 rounded bg-white border border-indigo-500 text-indigo-500 hover:bg-indigo-50"
           >
             Sign Up
